@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono
 
 @Controller
 class HomeController(
+    private val cartService: CartService,
     private val itemRepository: ItemRepository,
     private val cartRepository: CartRepository
 ) {
@@ -23,27 +24,7 @@ class HomeController(
 
     @PostMapping("/add/{id}")
     fun addToCart(@PathVariable id: String): Mono<String> {
-        return cartRepository.findById("My Cart")
-            .defaultIfEmpty(Cart("My Cart"))
-            .flatMap { cart ->
-                cart.cartItems.stream()
-                    .filter { cartItem ->
-                        cartItem.item.id.equals(id)
-                    }.findAny()
-                    .map { cartItem ->
-                        cartItem.quantity++
-                        Mono.just(cart)
-                    }
-                    .orElseGet {
-                        itemRepository.findById(id)
-                            .map { item -> CartItem(item) }
-                            .map { cartItem ->
-                                cart.cartItems.add(cartItem)
-                                cart
-                            }
-                    }
-            }
-            .flatMap { cart -> cartRepository.save(cart) }
+        return cartService.addToCart("My Cart", id)
             .thenReturn("redirect:/")
 
     }
