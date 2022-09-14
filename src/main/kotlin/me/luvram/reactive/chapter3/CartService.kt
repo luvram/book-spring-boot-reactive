@@ -1,4 +1,4 @@
-package me.luvram.reactive.chapter2
+package me.luvram.reactive.chapter3
 
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -9,8 +9,8 @@ class CartService(
     private val cartRepository: CartRepository
 ) {
     fun addToCart(cartId: String, id: String): Mono<Cart> {
-        return cartRepository.findById("My Cart")
-            .defaultIfEmpty(Cart("My Cart"))
+        return cartRepository.findById(cartId)
+            .defaultIfEmpty(Cart(cartId))
             .flatMap { cart ->
                 cart.cartItems.stream()
                     .filter { cartItem ->
@@ -31,4 +31,16 @@ class CartService(
             }
             .flatMap { cart -> cartRepository.save(cart) }
     }
+
+    fun deleteFromCart(cartId: String, id: String): Mono<Cart> {
+        return cartRepository.findById(cartId)
+            .flatMap { cart ->
+                cart.cartItems.removeIf { cartItem -> cartItem.item.id == id }
+                Mono.just(cart)
+            }.flatMap {
+                cartRepository.save(it)
+            }
+    }
+
+
 }
