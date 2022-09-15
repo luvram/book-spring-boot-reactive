@@ -24,7 +24,7 @@ class HomeController(
         val view = Rendering.view("chapter2-home.html")
             .modelAttribute("items", itemRepository
                 .findAll()
-//                .doOnNext { item -> log.info(item.toString()) }
+                .doOnNext { item -> log.info(item.toString()) }
             )
             .modelAttribute("cart", cartRepository.findById(CART_ID).defaultIfEmpty(Cart("My Cart")))
             .build()
