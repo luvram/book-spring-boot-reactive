@@ -8,7 +8,7 @@ import java.util.Random
 fun main() {
     Hooks.onOperatorDebug()
 
-    val source = if(Random().nextBoolean()) {
+    val source = if (Random().nextBoolean()) {
         Flux.range(1, 10).elementAt(11)
     } else {
         Flux.just(1, 2, 3, 4).elementAt(5)
