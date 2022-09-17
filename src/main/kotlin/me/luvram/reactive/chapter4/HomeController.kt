@@ -1,4 +1,4 @@
-package me.luvram.reactive.chapter3
+package me.luvram.reactive.chapter4
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 @Controller
 class HomeController(
-    private val cartService: CartService,
+    private val inventoryService: InventoryService,
     private val itemRepository: ItemRepository,
     private val cartRepository: CartRepository
 ) {
@@ -21,28 +21,30 @@ class HomeController(
     }
     @GetMapping
     fun home(): Mono<Rendering> {
-        val view = Rendering.view("home.html")
-            .modelAttribute("items", itemRepository
-                .findAll()
+        val view = Rendering.view("home")
+            .modelAttribute("items", inventoryService.getInventory()
                 .doOnNext { item -> log.info(item.toString()) }
             )
-            .modelAttribute("cart", cartRepository.findById(CART_ID).defaultIfEmpty(Cart("My Cart")))
+            .modelAttribute("cart", inventoryService.getCart(CART_ID).defaultIfEmpty(Cart("My Cart")))
             .build()
         return Mono.just(view)
     }
 
     @PostMapping("/add/{id}")
     fun addToCart(@PathVariable id: String): Mono<String> {
-        return cartService.addToCart(CART_ID, id)
+        return inventoryService.addToCart(CART_ID, id)
             .thenReturn("redirect:/")
     }
 
     @DeleteMapping("/delete/{id}")
     fun delete(@PathVariable id: String): Mono<String> {
-        return cartService.deleteFromCart(CART_ID, id)
-            .doOnNext { log.info(it.toString()) }
+        return inventoryService.deleteItem(id)
             .thenReturn("redirect:/")
     }
 
-
+    @DeleteMapping("/remove/{id}")
+    fun remove(@PathVariable id: String): Mono<String> {
+        return inventoryService.removeFromCart(CART_ID, id)
+            .thenReturn("redirect:/")
+    }
 }

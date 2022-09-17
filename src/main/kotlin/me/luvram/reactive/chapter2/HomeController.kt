@@ -15,7 +15,7 @@ class HomeController(
 ) {
     @GetMapping
     fun home(): Mono<Rendering> {
-        val view = Rendering.view("chapter2-home.html")
+        val view = Rendering.view("chapter2.html")
             .modelAttribute("items", itemRepository.findAll())
             .modelAttribute("cart", cartRepository.findById("My Cart").defaultIfEmpty(Cart("My Cart")))
             .build()
