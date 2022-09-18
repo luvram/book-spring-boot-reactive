@@ -11,9 +11,7 @@ import reactor.core.publisher.Mono
 
 @Controller
 class HomeController(
-    private val inventoryService: InventoryService,
-    private val itemRepository: ItemRepository,
-    private val cartRepository: CartRepository
+    private val inventoryService: InventoryService
 ) {
     companion object {
         private const val CART_ID = "My Cart"

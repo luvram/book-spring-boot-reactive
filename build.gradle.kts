@@ -31,6 +31,8 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.kotest:kotest-runner-junit5:5.4.0")
 	testImplementation("io.kotest:kotest-assertions-core:5.4.0")
+	testImplementation("io.mockk:mockk:1.9.1")
+	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
 }
 
 tasks.withType<KotlinCompile> {
