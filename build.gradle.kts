@@ -33,6 +33,7 @@ dependencies {
 	testImplementation("io.kotest:kotest-assertions-core:5.4.0")
 	testImplementation("io.mockk:mockk:1.9.1")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
+	testImplementation("io.projectreactor.tools:blockhound-junit-platform:1.0.6.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {
