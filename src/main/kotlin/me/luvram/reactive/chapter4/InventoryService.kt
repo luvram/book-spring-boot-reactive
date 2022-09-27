@@ -52,6 +52,33 @@ class InventoryService(
             .log("savedCart")
     }
 
+    fun addToCartBlocking(cartId: String, id: String): Mono<Cart> {
+        val myCart = cartRepository.findById(cartId)
+            .defaultIfEmpty(Cart(cartId))
+            .block()
+
+
+        return myCart?.cartItems?.stream()
+            ?.filter { cartItem ->
+                cartItem.item.id.equals(id)
+            }?.findAny()
+            ?.map { cartItem ->
+                cartItem.increase()
+                Mono.just(myCart)
+            }
+            ?.orElseGet {
+                itemRepository.findById(id)
+                    .map { item -> CartItem(item) }
+                    .map { cartItem ->
+                        myCart.cartItems.add(cartItem)
+                        myCart
+                    }
+            }
+
+            ?.flatMap { cart -> cartRepository.save(cart) } ?: Mono.empty()
+    }
+
+
     fun removeFromCart(cartId: String, id: String): Mono<Cart> {
         return cartRepository.findById(cartId)
             .defaultIfEmpty(Cart(cartId))
