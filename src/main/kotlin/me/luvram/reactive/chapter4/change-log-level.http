@@ -1,0 +1,16 @@
+### 로그 지정 테스트
+POST http://localhost:8080/actuator/loggers/me.luvram
+Content-Type: application/json
+
+{
+    "configuredLevel": "TRACE"
+}
+
+### 로그 지정 해제
+POST http://localhost:8080/actuator/loggers/me.luvram
+Content-Type: application/json
+
+{
+    "configuredLevel": null
+}
+
